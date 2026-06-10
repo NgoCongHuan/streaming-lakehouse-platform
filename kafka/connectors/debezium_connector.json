@@ -1,0 +1,27 @@
+{
+  "name": "pg-corebank-cdc",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "database.hostname": "pg-streaming-homelab.postgres.database.azure.com",
+    "database.port": "5432",
+    "database.user": "debezium_user",
+    "database.password": "StrongPassword123!",
+    "database.dbname": "postgres",
+    "topic.prefix": "cdc.postgres",
+    "schema.include.list": "corebank",
+    "table.include.list": "corebank.customer,corebank.account,corebank.transaction,corebank.branch,corebank.loan_account,corebank.deposit_account,corebank.customer_address,corebank.customer_contact",
+    "publication.name": "dbz_publication",
+    "slot.name": "dbz_corebank_slot",
+    "snapshot.mode": "initial",
+    "tombstones.on.delete": "false",
+    "decimal.handling.mode": "string",
+    "time.precision.mode": "connect",
+    "include.schema.changes": "true",
+    "errors.tolerance": "all",
+    "errors.deadletterqueue.topic.name": "dlq.postgres.corebank",
+    "errors.deadletterqueue.context.headers.enable": "true",
+    "errors.log.enable": "true",
+    "errors.log.include.messages": "true"
+  }
+}
