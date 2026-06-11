@@ -1,0 +1,10 @@
+bundle:
+  name: streaming-lakehouse-platform
+
+include:
+  - databricks/workflows/*.yml
+
+targets:
+  dev:
+    default: true
+    mode: development

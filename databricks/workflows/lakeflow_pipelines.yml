@@ -1,0 +1,59 @@
+resources:
+  jobs:
+    lpbank_etl_pipeline:
+      name: lpbank-etl-pipeline
+      tasks:
+        - task_key: run_landing_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.landing_pipeline.id}
+
+        - task_key: run_bronze_pipeline
+          depends_on:
+            - task_key: run_landing_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.bronze_pipeline.id}
+
+        - task_key: run_silver_pipeline
+          depends_on:
+            - task_key: run_bronze_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.silver_pipeline.id}
+
+        - task_key: run_gold_pipeline
+          depends_on:
+            - task_key: run_silver_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.gold_pipeline.id}
+
+  pipelines:
+    landing_pipeline:
+      name: lpbank-landing-pipeline
+      catalog: lpbank
+      schema: landing
+      libraries:
+        - notebook:
+            path: ../notebooks/01_landing/01_landing_kafka_to_delta.py
+
+    bronze_pipeline:
+      name: lpbank-bronze-pipeline
+      catalog: lpbank
+      schema: bronze
+      libraries:
+        - notebook:
+            path: ../notebooks/02_bronze/02_bronze_from_landing.py
+
+    silver_pipeline:
+      name: lpbank-silver-pipeline
+      catalog: lpbank
+      schema: silver
+      libraries:
+        - notebook:
+            path: ../notebooks/03_silver/03_silver_transform.py
+
+    gold_pipeline:
+      name: lpbank-gold-pipeline
+      catalog: lpbank
+      schema: gold
+      libraries:
+        - notebook:
+            path: ../notebooks/04_gold/04_gold_marts.py
